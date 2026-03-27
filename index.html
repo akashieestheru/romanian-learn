@@ -486,181 +486,362 @@ body {
 <script>
 // ===== DATA =====
 const PR_PHRASES = [
-  { ro: "Mă numesc ___ și locuiesc în România de 10 ani.", en: "My name is ___ and I have lived in Romania for 10 years." },
-  { ro: "Solicit dreptul de ședere permanentă în România.", en: "I am requesting the right of permanent residency in Romania." },
-  { ro: "Dețin un contract de muncă pe perioadă nedeterminată.", en: "I hold an open-ended employment contract." },
-  { ro: "Plătesc impozit pe venit și contribuțiile sociale.", en: "I pay income tax and social contributions." },
-  { ro: "Am asigurare medicală și sunt înregistrat la medicul de familie.", en: "I have medical insurance and am registered with a family doctor." },
-  { ro: "Nu am cazier judiciar în România sau în țara mea de origine.", en: "I have no criminal record in Romania or my country of origin." },
-  { ro: "Respect Constituția și legile României.", en: "I respect the Constitution and laws of Romania." },
-  { ro: "M-am integrat în comunitatea românească.", en: "I have integrated into the Romanian community." },
-  { ro: "Am mijloace de trai suficiente, dovedite prin extrasul de cont.", en: "I have sufficient means of living, proven by my bank statement." },
-  { ro: "Doresc să contribui la societatea românească.", en: "I wish to contribute to Romanian society." },
-  { ro: "Vorbesc limba română la nivel elementar-mediu.", en: "I speak Romanian at an elementary-intermediate level." },
-  { ro: "Am domiciliu stabil în România.", en: "I have a stable domicile in Romania." },
-  { ro: "Contribui la viața socială și economică a României.", en: "I contribute to the social and economic life of Romania." },
-  { ro: "Dețin o proprietate imobiliară în România.", en: "I own real estate property in Romania." },
-  { ro: "Copiii mei sunt înscriși la o școală din România.", en: "My children are enrolled in a school in Romania." }
+  {
+    ro: "Mă numesc ___ și locuiesc în România de 10 ani.",
+    en: "My name is ___ and I have lived in Romania for 10 years.",
+    note: "Self introduction",
+    alt: [
+      "Sunt ___ și trăiesc în România de un deceniu. (I am ___ and I have lived in Romania for a decade.)",
+      "Numele meu este ___, sunt stabilit în România din ___. (My name is ___, I have been settled in Romania since ___.) "
+    ]
+  },
+  {
+    ro: "Solicit dreptul de ședere permanentă în România.",
+    en: "I am requesting the right of permanent residency in Romania.",
+    note: "Why you are there",
+    alt: [
+      "Doresc să obțin șederea permanentă. (I wish to obtain permanent residency.)",
+      "Am venit să depun cerere pentru ședere permanentă. (I have come to submit an application for permanent residency.)"
+    ]
+  },
+  {
+    ro: "Dețin un contract de muncă pe perioadă nedeterminată.",
+    en: "I hold a permanent employment contract.",
+    note: "Proof of work",
+    alt: [
+      "Lucrez la ___ de ___ ani, cu contract permanent. (I have worked at ___ for ___ years, with a permanent contract.)",
+      "Sunt angajat cu normă întreagă la firma ___. (I am employed full-time at the company ___.)"
+    ]
+  },
+  {
+    ro: "Plătesc impozit pe venit și contribuțiile sociale.",
+    en: "I pay income tax and social contributions.",
+    note: "Tax compliance",
+    alt: [
+      "Sunt la zi cu toate impozitele și taxele. (I am up to date with all taxes.)",
+      "Plătesc CAS, CASS și impozit lunar. (I pay pension, health and income tax monthly.)"
+    ]
+  },
+  {
+    ro: "Am asigurare medicală și sunt înregistrat la medicul de familie.",
+    en: "I have health insurance and am registered with a family doctor.",
+    note: "Health coverage",
+    alt: [
+      "Sunt asigurat medical prin angajator. (I have health insurance through my employer.)",
+      "Am medic de familie și am CASS achitat. (I have a family doctor and health contributions paid.)"
+    ]
+  },
+  {
+    ro: "Nu am cazier judiciar în România sau în țara mea de origine.",
+    en: "I have no criminal record in Romania or my country of origin.",
+    note: "Clean record",
+    alt: [
+      "Cazierul meu judiciar este curat. (My criminal record is clean.)",
+      "Nu am fost condamnat în nicio țară. (I have not been convicted in any country.)"
+    ]
+  },
+  {
+    ro: "Respect Constituția și legile României.",
+    en: "I respect the Constitution and laws of Romania.",
+    note: "Civic commitment",
+    alt: [
+      "Respect legile și regulile acestei țări. (I respect the laws and rules of this country.)",
+      "Înțeleg și respect valorile democratice ale României. (I understand and respect Romania's democratic values.)"
+    ]
+  },
+  {
+    ro: "M-am integrat în comunitatea românească.",
+    en: "I have integrated into the Romanian community.",
+    note: "Integration",
+    alt: [
+      "Am prieteni români și particip la viața comunității. (I have Romanian friends and participate in community life.)",
+      "Mă simt acasă în România. (I feel at home in Romania.)"
+    ]
+  },
+  {
+    ro: "Am mijloace de trai suficiente, dovedite prin extrasul de cont.",
+    en: "I have sufficient means of living, proven by my bank statement.",
+    note: "Financial stability",
+    alt: [
+      "Salariul meu acoperă toate cheltuielile lunare. (My salary covers all monthly expenses.)",
+      "Am economii și un venit stabil. (I have savings and a stable income.)"
+    ]
+  },
+  {
+    ro: "Vorbesc limba română la nivel elementar-mediu.",
+    en: "I speak Romanian at an elementary-intermediate level.",
+    note: "Language ability",
+    alt: [
+      "Încerc să vorbesc română în fiecare zi. (I try to speak Romanian every day.)",
+      "Înțeleg bine, vorbesc mai greu, dar mă descurc. (I understand well, speaking is harder, but I manage.)"
+    ]
+  },
+  {
+    ro: "Am domiciliu stabil în România.",
+    en: "I have a stable domicile in Romania.",
+    note: "Address/home",
+    alt: [
+      "Locuiesc la aceeași adresă de ___ ani. (I have lived at the same address for ___ years.)",
+      "Stau în chirie cu contract înregistrat la ANAF. (I rent with a contract registered with the tax authority.)"
+    ]
+  },
+  {
+    ro: "Contribui la viața socială și economică a României.",
+    en: "I contribute to the social and economic life of Romania.",
+    note: "Contribution to society",
+    alt: [
+      "Muncesc, plătesc taxe și respect legile. (I work, pay taxes and respect the laws.)",
+      "Particip activ la viața comunității locale. (I actively participate in local community life.)"
+    ]
+  },
+  {
+    ro: "Doresc să contribui la societatea românească pe termen lung.",
+    en: "I wish to contribute to Romanian society long-term.",
+    note: "Future commitment",
+    alt: [
+      "Viitorul meu este în România. (My future is in Romania.)",
+      "Vreau să rămân și să construiesc o viață stabilă aici. (I want to stay and build a stable life here.)"
+    ]
+  },
+  {
+    ro: "Familia mea este stabilită în România.",
+    en: "My family is settled in Romania.",
+    note: "Family ties",
+    alt: [
+      "Soția/Soțul și copiii mei locuiesc în România. (My wife/husband and children live in Romania.)",
+      "Centrul vieții mele de familie este aici. (The centre of my family life is here.)"
+    ]
+  },
+  {
+    ro: "Consider România a doua mea casă.",
+    en: "I consider Romania my second home.",
+    note: "Strong closing statement",
+    alt: [
+      "Mă simt român prin adopție. (I feel Romanian by adoption.)",
+      "Zece ani în România înseamnă că aceasta este casa mea. (Ten years in Romania means this is my home.)"
+    ]
+  }
 ];
 
 const VOCAB = [
-  // A1 - Pronunciation
-  { ro: "ă", ph: "[uh]", en: "like 'a' in 'sofa'", cat: "A1", tag: "Alphabet" },
-  { ro: "â / î", ph: "[ɨ]", en: "deep 'i', like Russian 'ы'", cat: "A1", tag: "Alphabet" },
-  { ro: "ș", ph: "[sh]", en: "like 'sh' in 'shoe'", cat: "A1", tag: "Alphabet" },
-  { ro: "ț", ph: "[ts]", en: "like 'ts' in 'cats'", cat: "A1", tag: "Alphabet" },
-  // A1 - Greetings
-  { ro: "Bună ziua", ph: "[BOO-nuh ZEE-wah]", en: "Good day (formal)", cat: "A1", tag: "Greetings", alt: "Bună, Salut" },
-  { ro: "Bună dimineața", ph: "[BOO-nuh dee-mee-NYAH-tsah]", en: "Good morning", cat: "A1", tag: "Greetings" },
-  { ro: "Bună seara", ph: "[BOO-nuh SYAH-rah]", en: "Good evening", cat: "A1", tag: "Greetings" },
-  { ro: "Noapte bună", ph: "[NWAP-teh BOO-nuh]", en: "Good night", cat: "A1", tag: "Greetings" },
-  { ro: "Salut", ph: "[sah-LOOT]", en: "Hi / Hello (informal)", cat: "A1", tag: "Greetings", alt: "Bună" },
-  { ro: "La revedere", ph: "[lah reh-veh-DEH-reh]", en: "Goodbye (formal)", cat: "A1", tag: "Greetings", alt: "Pa, La mai văzut" },
-  { ro: "Mulțumesc", ph: "[mool-tsoo-MESK]", en: "Thank you", cat: "A1", tag: "Greetings", alt: "Mersi (informal)" },
-  { ro: "Cu plăcere", ph: "[koo pluh-CHEH-reh]", en: "You're welcome / With pleasure", cat: "A1", tag: "Greetings" },
-  { ro: "Vă rog / Te rog", ph: "[vuh ROHG / teh ROHG]", en: "Please (formal/informal)", cat: "A1", tag: "Greetings" },
-  { ro: "Îmi pare rău", ph: "[eem PAH-reh ROW]", en: "I'm sorry", cat: "A1", tag: "Greetings", alt: "Scuze (informal)" },
-  { ro: "Mă numesc ___", ph: "[muh noo-MESK]", en: "My name is ___", cat: "A1", tag: "Greetings", alt: "Numele meu este ___" },
-  { ro: "Cum vă numiți?", ph: "[koom vuh noo-MEETS]", en: "What is your name? (formal)", cat: "A1", tag: "Greetings" },
-  { ro: "Cum te cheamă?", ph: "[koom teh KYAH-muh]", en: "What is your name? (informal)", cat: "A1", tag: "Greetings" },
-  { ro: "Cum vă mai duceți?", ph: "[koom vuh my DOO-chets]", en: "How are you? (formal)", cat: "A1", tag: "Greetings" },
-  { ro: "Bine, mulțumesc", ph: "[BEE-neh]", en: "Fine, thank you", cat: "A1", tag: "Greetings" },
-  // A1 - Numbers
-  { ro: "unu / una", ph: "[OO-noo]", en: "one (m/f)", cat: "A1", tag: "Numbers" },
-  { ro: "doi / două", ph: "[doy / DOH-wuh]", en: "two (m/f)", cat: "A1", tag: "Numbers" },
-  { ro: "trei", ph: "[trey]", en: "three", cat: "A1", tag: "Numbers" },
-  { ro: "patru", ph: "[PAH-troo]", en: "four", cat: "A1", tag: "Numbers" },
-  { ro: "cinci", ph: "[chinch]", en: "five", cat: "A1", tag: "Numbers" },
-  { ro: "șase", ph: "[SHAH-seh]", en: "six", cat: "A1", tag: "Numbers" },
-  { ro: "șapte", ph: "[SHAHP-teh]", en: "seven", cat: "A1", tag: "Numbers" },
-  { ro: "opt", ph: "[ohpt]", en: "eight", cat: "A1", tag: "Numbers" },
-  { ro: "nouă", ph: "[NOH-wuh]", en: "nine", cat: "A1", tag: "Numbers" },
-  { ro: "zece", ph: "[ZEH-cheh]", en: "ten", cat: "A1", tag: "Numbers" },
-  { ro: "douăzeci", ph: "[DOH-wuh-ZEH-chee]", en: "twenty", cat: "A1", tag: "Numbers" },
-  { ro: "o sută", ph: "[oh SOO-tuh]", en: "one hundred", cat: "A1", tag: "Numbers" },
-  { ro: "o mie", ph: "[oh MEE-yeh]", en: "one thousand", cat: "A1", tag: "Numbers" },
-  // A1 - Family
-  { ro: "familie", ph: "[fah-MEE-lee-yeh]", en: "family", cat: "A1", tag: "Family" },
-  { ro: "mamă", ph: "[MAH-muh]", en: "mother", cat: "A1", tag: "Family", alt: "maică (archaic)" },
-  { ro: "tată", ph: "[TAH-tuh]", en: "father", cat: "A1", tag: "Family" },
-  { ro: "soț / soție", ph: "[sohts / SOH-tsee-yeh]", en: "husband / wife", cat: "A1", tag: "Family" },
-  { ro: "fiu / fiică", ph: "[fyoo / FEE-kuh]", en: "son / daughter", cat: "A1", tag: "Family" },
-  { ro: "frate / soră", ph: "[FRAH-teh / SOH-ruh]", en: "brother / sister", cat: "A1", tag: "Family" },
-  { ro: "bunic / bunică", ph: "[boo-NEEK / boo-NEE-kuh]", en: "grandfather / grandmother", cat: "A1", tag: "Family" },
-  { ro: "unchi / mătușă", ph: "[OONG-kee / muh-TOO-shuh]", en: "uncle / aunt", cat: "A1", tag: "Family" },
-  { ro: "nepot / nepoată", ph: "[neh-POHT]", en: "nephew, grandson / niece, granddaughter", cat: "A1", tag: "Family" },
-  { ro: "văr / vară", ph: "[vur / VAH-ruh]", en: "cousin (m/f)", cat: "A1", tag: "Family" },
-  // A1 - Verbs
-  { ro: "a fi", ph: "[ah fee]", en: "to be", cat: "A1", tag: "Verbs" },
-  { ro: "a avea", ph: "[ah ah-VEH-ah]", en: "to have", cat: "A1", tag: "Verbs" },
-  { ro: "a vrea", ph: "[ah VREH-ah]", en: "to want", cat: "A1", tag: "Verbs" },
-  { ro: "a merge", ph: "[ah MEHR-jeh]", en: "to go / to walk", cat: "A1", tag: "Verbs" },
-  { ro: "a vorbi", ph: "[ah vohr-BEE]", en: "to speak", cat: "A1", tag: "Verbs" },
-  { ro: "a locui", ph: "[ah loh-KWEE]", en: "to live / to reside", cat: "A1", tag: "Verbs" },
-  { ro: "a lucra", ph: "[ah loo-KRAH]", en: "to work", cat: "A1", tag: "Verbs" },
-  { ro: "a înțelege", ph: "[ah ɨn-tsuh-LEH-jeh]", en: "to understand", cat: "A1", tag: "Verbs" },
-  { ro: "a cumpăra", ph: "[ah koom-puh-RAH]", en: "to buy", cat: "A1", tag: "Verbs" },
-  { ro: "a mânca", ph: "[ah mɨn-KAH]", en: "to eat", cat: "A1", tag: "Verbs" },
-  { ro: "a bea", ph: "[ah BEH-ah]", en: "to drink", cat: "A1", tag: "Verbs" },
-  { ro: "a ști", ph: "[ah shtee]", en: "to know (a fact)", cat: "A1", tag: "Verbs" },
-  { ro: "a putea", ph: "[ah poo-TEH-ah]", en: "to be able to / can", cat: "A1", tag: "Verbs" },
-  { ro: "a trebui", ph: "[ah treh-BWEE]", en: "must / to need to", cat: "A1", tag: "Verbs" },
-  // A1 - Colors
-  { ro: "roșu / roșie", ph: "[ROH-shoo]", en: "red", cat: "A1", tag: "Colors" },
-  { ro: "albastru / albastră", ph: "[al-BAHS-troo]", en: "blue", cat: "A1", tag: "Colors" },
-  { ro: "verde", ph: "[VEHR-deh]", en: "green", cat: "A1", tag: "Colors" },
-  { ro: "galben / galbenă", ph: "[GAL-ben]", en: "yellow", cat: "A1", tag: "Colors" },
-  { ro: "negru / neagră", ph: "[NEH-groo]", en: "black", cat: "A1", tag: "Colors" },
-  { ro: "alb / albă", ph: "[alb]", en: "white", cat: "A1", tag: "Colors" },
-  // A1 - Time
-  { ro: "azi / astăzi", ph: "[AZI / AS-tuh-zi]", en: "today", cat: "A1", tag: "Time" },
-  { ro: "mâine", ph: "[MɨI-neh]", en: "tomorrow", cat: "A1", tag: "Time" },
-  { ro: "ieri", ph: "[YEHR-ee]", en: "yesterday", cat: "A1", tag: "Time" },
-  { ro: "acum", ph: "[ah-KOOM]", en: "now", cat: "A1", tag: "Time" },
-  { ro: "luni", ph: "[LOON-ee]", en: "Monday", cat: "A1", tag: "Time" },
-  { ro: "marți", ph: "[MAHR-tsee]", en: "Tuesday", cat: "A1", tag: "Time" },
-  { ro: "miercuri", ph: "[MYEHR-koo-ree]", en: "Wednesday", cat: "A1", tag: "Time" },
-  { ro: "joi", ph: "[zhoy]", en: "Thursday", cat: "A1", tag: "Time" },
-  { ro: "vineri", ph: "[VEE-neh-ree]", en: "Friday", cat: "A1", tag: "Time" },
-  { ro: "sâmbătă", ph: "[SɨM-buh-tuh]", en: "Saturday", cat: "A1", tag: "Time" },
-  { ro: "duminică", ph: "[doo-MEE-nee-kuh]", en: "Sunday", cat: "A1", tag: "Time" },
-  { ro: "ora", ph: "[OH-rah]", en: "the hour / o'clock", cat: "A1", tag: "Time" },
-  { ro: "dimineața", ph: "[dee-mee-NYAH-tsah]", en: "morning", cat: "A1", tag: "Time" },
-  { ro: "după-amiaza", ph: "[DOO-puh ah-MYAH-zah]", en: "afternoon", cat: "A1", tag: "Time" },
-  { ro: "seara", ph: "[SYAH-rah]", en: "evening", cat: "A1", tag: "Time" },
-  // A1 - Places
-  { ro: "casă / apartament", ph: "[KAH-suh]", en: "house / apartment", cat: "A1", tag: "Places" },
-  { ro: "stradă", ph: "[STRAH-duh]", en: "street", cat: "A1", tag: "Places" },
-  { ro: "piață", ph: "[PYAH-tsuh]", en: "square / market", cat: "A1", tag: "Places" },
-  { ro: "magazin", ph: "[mah-gah-ZEEN]", en: "store / shop", cat: "A1", tag: "Places" },
-  { ro: "restaurant", ph: "[res-tow-RAHNT]", en: "restaurant", cat: "A1", tag: "Places" },
-  { ro: "spital", ph: "[spee-TAL]", en: "hospital", cat: "A1", tag: "Places" },
-  { ro: "stânga", ph: "[STɨN-gah]", en: "left", cat: "A1", tag: "Directions" },
-  { ro: "dreapta", ph: "[DRYAHP-tah]", en: "right", cat: "A1", tag: "Directions" },
-  { ro: "drept înainte", ph: "[drept ɨn-ah-EEN-teh]", en: "straight ahead", cat: "A1", tag: "Directions" },
-  { ro: "Unde este ___?", ph: "[OON-deh YES-teh]", en: "Where is ___?", cat: "A1", tag: "Directions" },
-  // A2 - Documents
-  { ro: "permis de ședere", ph: "[PEHR-mees deh SHEH-deh-reh]", en: "residence permit", cat: "A2", tag: "Documents", pr: true },
-  { ro: "buletin / carte de identitate", ph: "[boo-leh-TEEN]", en: "ID card", cat: "A2", tag: "Documents", pr: true },
-  { ro: "pașaport", ph: "[pah-shah-POHRT]", en: "passport", cat: "A2", tag: "Documents", pr: true },
-  { ro: "certificat de naștere", ph: "[chehr-tee-fee-KAHT deh NASH-teh-reh]", en: "birth certificate", cat: "A2", tag: "Documents", pr: true },
-  { ro: "certificat de căsătorie", ph: "[deh kuh-suh-TOH-ree-yeh]", en: "marriage certificate", cat: "A2", tag: "Documents", pr: true },
-  { ro: "cazier judiciar", ph: "[kah-ZYEHR zhoo-dee-CHYAHR]", en: "criminal record certificate", cat: "A2", tag: "Documents", pr: true },
-  { ro: "dosar", ph: "[doh-SAHR]", en: "file / dossier", cat: "A2", tag: "Documents" },
-  { ro: "cerere", ph: "[CHEH-reh-reh]", en: "application / request", cat: "A2", tag: "Documents" },
-  { ro: "formular", ph: "[fohr-moo-LAHR]", en: "form", cat: "A2", tag: "Documents" },
-  { ro: "a semna / semnătură", ph: "[ah sem-NAH]", en: "to sign / signature", cat: "A2", tag: "Documents" },
-  { ro: "domiciliu", ph: "[doh-mee-CHEE-lyoo]", en: "domicile / permanent address", cat: "A2", tag: "Documents", pr: true },
-  { ro: "reședință", ph: "[reh-SHEH-deen-tsuh]", en: "residence", cat: "A2", tag: "Documents", pr: true },
-  { ro: "notar", ph: "[noh-TAHR]", en: "notary", cat: "A2", tag: "Documents" },
-  { ro: "apostilă", ph: "[ah-pos-TEE-luh]", en: "apostille (document legalization)", cat: "A2", tag: "Documents" },
-  { ro: "traducere autorizată", ph: "[trah-DOO-cheh-reh ow-toh-ree-ZAH-tuh]", en: "authorized translation", cat: "A2", tag: "Documents" },
-  // A2 - Health
-  { ro: "medic de familie", ph: "[MEH-deek deh fah-MEE-lee-yeh]", en: "family doctor (GP)", cat: "A2", tag: "Health", pr: true },
-  { ro: "asigurare de sănătate", ph: "[ah-see-goo-RAH-reh deh suh-nuh-TAH-teh]", en: "health insurance", cat: "A2", tag: "Health", pr: true },
-  { ro: "rețetă", ph: "[reh-TSEH-tuh]", en: "prescription", cat: "A2", tag: "Health" },
-  { ro: "medicament", ph: "[meh-dee-kah-MENT]", en: "medication", cat: "A2", tag: "Health" },
-  { ro: "consultație", ph: "[kohn-sool-TAH-tsee-yeh]", en: "medical consultation", cat: "A2", tag: "Health" },
-  { ro: "mă doare capul", ph: "[muh DOH-ah-reh KAH-pool]", en: "my head hurts", cat: "A2", tag: "Health" },
-  { ro: "ambulanță", ph: "[ahm-boo-LAHN-tsuh]", en: "ambulance", cat: "A2", tag: "Health" },
-  { ro: "urgență", ph: "[oor-JEN-tsuh]", en: "emergency", cat: "A2", tag: "Health" },
-  // A2 - Work
-  { ro: "loc de muncă", ph: "[lohk deh MOON-kuh]", en: "workplace / job", cat: "A2", tag: "Work", pr: true },
-  { ro: "angajator / angajat", ph: "[an-gah-zhah-TOHR]", en: "employer / employee", cat: "A2", tag: "Work" },
-  { ro: "contract de muncă", ph: "[kohn-TRAKT deh MOON-kuh]", en: "employment contract", cat: "A2", tag: "Work", pr: true },
-  { ro: "salariu", ph: "[sah-LAH-ree-yoo]", en: "salary", cat: "A2", tag: "Work", pr: true },
-  { ro: "impozit pe venit", ph: "[eem-POH-zeet peh VEH-neet]", en: "income tax", cat: "A2", tag: "Work", pr: true },
-  { ro: "contribuții sociale", ph: "[kohn-tree-BOO-tsee-ee soh-CHYAH-leh]", en: "social contributions (CAS/CASS)", cat: "A2", tag: "Work", pr: true },
-  { ro: "profesie / ocupație", ph: "[proh-FEH-see-yeh]", en: "profession / occupation", cat: "A2", tag: "Work" },
-  { ro: "concediu", ph: "[kohn-CHEH-dyoo]", en: "leave / vacation", cat: "A2", tag: "Work" },
-  // A2 - Transport
-  { ro: "autobuz", ph: "[ow-toh-BOOZ]", en: "bus", cat: "A2", tag: "Transport" },
-  { ro: "metrou", ph: "[meh-TROO]", en: "metro / subway", cat: "A2", tag: "Transport" },
-  { ro: "tramvai", ph: "[tram-VY]", en: "tram", cat: "A2", tag: "Transport" },
-  { ro: "troleu", ph: "[troh-LEH-oo]", en: "trolleybus", cat: "A2", tag: "Transport" },
-  { ro: "gară", ph: "[GAH-ruh]", en: "train station", cat: "A2", tag: "Transport" },
-  { ro: "aeroport", ph: "[ah-eh-roh-POHRT]", en: "airport", cat: "A2", tag: "Transport" },
-  { ro: "bilet", ph: "[bee-LET]", en: "ticket", cat: "A2", tag: "Transport" },
-  { ro: "rovinietă", ph: "[roh-vee-NYEH-tuh]", en: "road tax vignette (highways)", cat: "A2", tag: "Transport" },
-  // B1 - PR Vocabulary
-  { ro: "reședință permanentă", ph: "[reh-SHEH-deen-tsuh pehr-mah-NEN-tuh]", en: "permanent residency", cat: "B1", tag: "PR Exam", pr: true },
-  { ro: "integrare socială", ph: "[een-teh-GRAH-reh soh-CHYAH-luh]", en: "social integration", cat: "B1", tag: "PR Exam", pr: true },
-  { ro: "mijloace de trai", ph: "[mee-ZHWAH-cheh deh TRY]", en: "means of living / livelihood", cat: "B1", tag: "PR Exam", pr: true },
-  { ro: "drepturi și obligații", ph: "[DREP-too-ree shee oh-blee-GAH-tsee-ee]", en: "rights and obligations", cat: "B1", tag: "PR Exam", pr: true },
-  { ro: "cunoașterea limbii române", ph: "[koo-NWASH-teh-rah LEEM-bee ROH-mɨ-neh]", en: "knowledge of the Romanian language", cat: "B1", tag: "PR Exam", pr: true },
-  { ro: "Inspectoratul General pentru Imigrări (IGI)", ph: "[ees-pek-toh-RAH-tool jeh-neh-RAL pen-troo ee-mee-GRUH-ree]", en: "General Inspectorate for Immigration", cat: "B1", tag: "PR Exam", pr: true },
-  { ro: "Constituția României", ph: "[kohn-stee-TOO-tsee-ah ROH-mɨ-nee-ee]", en: "Constitution of Romania", cat: "B1", tag: "Civic", pr: true },
-  { ro: "cetățenie", ph: "[cheh-tuh-TSEE-nee-yeh]", en: "citizenship", cat: "B1", tag: "Civic" },
-  { ro: "a mă integra", ph: "[ah muh een-teh-GRAH]", en: "to integrate", cat: "B1", tag: "PR Exam" },
-  { ro: "a contribui", ph: "[ah kohn-tree-BWEE]", en: "to contribute", cat: "B1", tag: "PR Exam" },
-  { ro: "a respecta", ph: "[ah res-pek-TAH]", en: "to respect / to comply with", cat: "B1", tag: "PR Exam" },
-  { ro: "extrasul de cont", ph: "[eks-TRAH-sool deh kohnt]", en: "bank statement", cat: "B1", tag: "PR Exam", pr: true },
-  // B1 - Advanced
-  { ro: "deoarece / fiindcă", ph: "[deh-OH-ah-reh-cheh]", en: "because / since (formal/informal)", cat: "B1", tag: "Grammar" },
-  { ro: "cu toate că / deși", ph: "[koo TWAH-teh kuh]", en: "even though / although", cat: "B1", tag: "Grammar" },
-  { ro: "în ciuda faptului că", ph: "[ɨn CHYOO-dah FAP-too-loo kuh]", en: "in spite of the fact that", cat: "B1", tag: "Grammar" },
-  { ro: "prin urmare / astfel", ph: "[preen OOR-mah-reh]", en: "therefore / thus", cat: "B1", tag: "Grammar" },
-  { ro: "condiționatul", ph: "[kohn-dee-tsyoh-NAH-lool]", en: "conditional tense (aș, ai, ar...)", cat: "B1", tag: "Grammar" }
+
+  // ─── GREETINGS ───────────────────────────────────────────
+  { ro: "Bună", ph: "BOO-nuh", en: "Hi / Hello (informal, use anytime)", level: "A1", cat: "Greetings",
+    example: "Bună! Ce mai faci?", grammar: "Works morning, afternoon, evening — the most common greeting",
+    alt: "Also: Salut [sah-LOOT] = Hey | Ciao [chow] = Bye/Hi (very casual)" },
+
+  { ro: "Bună ziua", ph: "BOO-nuh ZEE-wah", en: "Good day / Hello (formal)", level: "A1", cat: "Greetings",
+    example: "Bună ziua, am o programare.", grammar: "Use this at government offices, shops, doctors",
+    alt: "Bună dimineața = Good morning | Bună seara = Good evening" },
+
+  { ro: "La revedere", ph: "lah reh-veh-DEH-reh", en: "Goodbye (formal)", level: "A1", cat: "Greetings",
+    example: "La revedere și o zi bună!",
+    alt: "Pa! = Bye (casual) | Pa pa! = Bye bye | Ciao = Bye (casual)" },
+
+  { ro: "Mulțumesc", ph: "mool-tsoo-MESK", en: "Thank you", level: "A1", cat: "Greetings",
+    example: "Mulțumesc foarte mult!", grammar: "Foarte mult = very much",
+    alt: "Mersi [MER-see] = Thanks (casual, from French) | Mulțam = Thanks (very casual slang)" },
+
+  { ro: "Te rog", ph: "teh ROHG", en: "Please (informal)", level: "A1", cat: "Greetings",
+    example: "Un pahar cu apă, te rog.",
+    alt: "Vă rog [vuh ROHG] = Please (formal) — use vă rog at offices/shops" },
+
+  { ro: "Scuze / Scuzați", ph: "SCOO-zeh / scoo-ZAH-tsee", en: "Sorry / Excuse me", level: "A1", cat: "Greetings",
+    example: "Scuzați, unde este toaleta?",
+    alt: "Îmi pare rău [eem PAH-reh ruh] = I'm sorry (deeper apology)" },
+
+  { ro: "Da / Nu", ph: "dah / noo", en: "Yes / No", level: "A1", cat: "Greetings",
+    example: "Da, înțeleg. Nu, mulțumesc.",
+    alt: "Sigur = Sure | Bineînțeles = Of course | Desigur = Certainly" },
+
+  // ─── EVERYDAY ESSENTIALS ─────────────────────────────────
+  { ro: "Apă", ph: "AH-puh", en: "Water", level: "A1", cat: "Daily Life",
+    example: "O apă minerală, te rog.",
+    alt: "Apă plată = still water | Apă minerală = sparkling water" },
+
+  { ro: "Mâncare", ph: "mun-KAH-reh", en: "Food", level: "A1", cat: "Daily Life",
+    example: "Mâncarea este bună here.",
+    alt: "Masă = meal | Prânz = lunch | Cină = dinner | Mic dejun = breakfast" },
+
+  { ro: "Casă", ph: "KAH-suh", en: "House / Home", level: "A1", cat: "Daily Life",
+    example: "Merg acasă. (I'm going home.)",
+    alt: "Apartament = apartment | Bloc = apartment building | Acasă = at home" },
+
+  { ro: "Mașină", ph: "mah-SHEE-nuh", en: "Car", level: "A1", cat: "Daily Life",
+    example: "Vin cu mașina.",
+    alt: "Tramvai = tram | Autobuz = bus | Metrou = metro | Taxi = taxi" },
+
+  { ro: "Bani", ph: "BAH-nee", en: "Money", level: "A1", cat: "Daily Life",
+    example: "Nu am bani la mine.",
+    alt: "Lei = Romanian currency | Portofel = wallet | Card = card (same word)" },
+
+  { ro: "Magazin", ph: "mah-gah-ZEEN", en: "Shop / Store", level: "A1", cat: "Daily Life",
+    example: "Merg la magazin.",
+    alt: "Piață = market | Supermarket = supermarket | Farmecie = pharmacy" },
+
+  { ro: "Telefon", ph: "teh-leh-FON", en: "Phone", level: "A1", cat: "Daily Life",
+    example: "Îmi dai numărul de telefon?",
+    alt: "Mobil = mobile phone | A suna = to call | Mesaj = message" },
+
+  { ro: "Muncă", ph: "MOON-kuh", en: "Work / Job", level: "A1", cat: "Daily Life",
+    example: "Merg la muncă.",
+    alt: "Serviciu = job/work | Birou = office | Șef = boss | Coleg = colleague" },
+
+  // ─── PEOPLE ──────────────────────────────────────────────
+  { ro: "Om", ph: "ohm", en: "Person / Man", level: "A1", cat: "People",
+    example: "Este un om bun.",
+    alt: "Bărbat = man | Femeie = woman | Copil = child | Prieten = friend" },
+
+  { ro: "Familie", ph: "fah-MEE-lyeh", en: "Family", level: "A1", cat: "People",
+    example: "Familia mea este în România.",
+    alt: "Soț = husband | Soție = wife | Mamă = mum | Tată = dad | Frate = brother" },
+
+  { ro: "Prieten / Prietenă", ph: "pree-EH-ten / pree-EH-ten-uh", en: "Friend (male/female)", level: "A1", cat: "People",
+    example: "Am un prieten român.",
+    alt: "Amic/Amică = friend (slightly formal) | Coleg = colleague/classmate" },
+
+  { ro: "Vecin", ph: "veh-CHEEN", en: "Neighbour", level: "A1", cat: "People",
+    example: "Vecinul meu este foarte simpatic.",
+    alt: "Simpatic = nice | Drăguț = sweet/kind | Cumsecade = decent person" },
+
+  // ─── TIME ────────────────────────────────────────────────
+  { ro: "Azi / Astăzi", ph: "AHZ / ah-STUHZ", en: "Today", level: "A1", cat: "Time",
+    example: "Azi am o întâlnire.",
+    alt: "Mâine = tomorrow | Ieri = yesterday | Acum = now | Imediat = right away" },
+
+  { ro: "Dimineață", ph: "dee-mee-NYAH-tsuh", en: "Morning", level: "A1", cat: "Time",
+    example: "Bună dimineața!",
+    alt: "Amiază = midday/noon | După-amiază = afternoon | Seară = evening | Noapte = night" },
+
+  { ro: "Repede", ph: "REH-peh-deh", en: "Fast / Quick", level: "A1", cat: "Time",
+    example: "Vino repede!",
+    alt: "Încet = slow | Imediat = immediately | Curând = soon | Puțin = a little" },
+
+  // ─── DIRECTIONS / PLACES ─────────────────────────────────
+  { ro: "Unde este...?", ph: "OON-deh YEH-steh", en: "Where is...?", level: "A1", cat: "Directions",
+    example: "Unde este stația de metrou?",
+    alt: "Pe dreapta = on the right | Pe stânga = on the left | Drept înainte = straight ahead" },
+
+  { ro: "Aproape / Departe", ph: "ah-PRWAH-peh / deh-PAR-teh", en: "Near / Far", level: "A1", cat: "Directions",
+    example: "Este aproape, la 5 minute.",
+    alt: "Lângă = next to | În față = in front | În spate = behind | La colț = at the corner" },
+
+  { ro: "Stradă", ph: "STRAH-duh", en: "Street", level: "A1", cat: "Directions",
+    example: "Locuiesc pe strada Florilor.",
+    alt: "Bulevardul = boulevard | Piața = square/plaza | Bloc = apartment building" },
+
+  // ─── FEELINGS ────────────────────────────────────────────
+  { ro: "Bine", ph: "BEE-neh", en: "Well / Fine / Good", level: "A1", cat: "Feelings",
+    example: "Sunt bine, mulțumesc!",
+    alt: "Foarte bine = very well | Excelent = excellent | Super = great (casual)" },
+
+  { ro: "Obosit", ph: "oh-boh-SEET", en: "Tired", level: "A1", cat: "Feelings",
+    example: "Sunt foarte obosit azi.",
+    alt: "Somnoros = sleepy | Epuizat = exhausted | Stres = stress (same word)" },
+
+  { ro: "Fericit", ph: "feh-ree-CHEET", en: "Happy", level: "A1", cat: "Feelings",
+    example: "Sunt fericit că locuiesc în România.",
+    alt: "Bucuros = glad | Mulțumit = satisfied | Vesel = cheerful" },
+
+  // ─── BASIC VERBS ─────────────────────────────────────────
+  { ro: "A fi", ph: "ah FEE", en: "To be", level: "A1", cat: "Verbs",
+    example: "Sunt din India. Ești român?",
+    grammar: "Sunt/ești/este/suntem/sunteți/sunt",
+    alt: "Key verb! Sunt = I am | Ești = you are | Este = he/she is" },
+
+  { ro: "A avea", ph: "ah ah-VEH-ah", en: "To have", level: "A1", cat: "Verbs",
+    example: "Am un apartament în București.",
+    grammar: "Am/ai/are/avem/aveți/au",
+    alt: "Am = I have | Ai = you have | Are = he/she has" },
+
+  { ro: "A merge", ph: "ah MER-jeh", en: "To go", level: "A1", cat: "Verbs",
+    example: "Merg la muncă cu metroul.",
+    alt: "A pleca = to leave/depart | A veni = to come | A ajunge = to arrive" },
+
+  { ro: "A vrea", ph: "ah VREH-ah", en: "To want", level: "A1", cat: "Verbs",
+    example: "Vreau un pahar de apă.",
+    grammar: "Vreau/vrei/vrea/vrem/vreți/vor",
+    alt: "A dori = to wish/desire (more formal) | Aș vrea = I would like (polite)" },
+
+  { ro: "A înțelege", ph: "ah een-tseh-LEH-jeh", en: "To understand", level: "A1", cat: "Verbs",
+    example: "Nu înțeleg. Puteți repeta?",
+    alt: "A ști = to know | A vorbi = to speak | A asculta = to listen | A auzi = to hear" },
+
+  { ro: "A locui", ph: "ah loh-KWEE", en: "To live (reside)", level: "A1", cat: "Verbs",
+    example: "Locuiesc în România de 10 ani.",
+    alt: "A sta = to stay/live (casual) | Stau în chirie = I rent | Stau la bloc = I live in an apartment building" },
+
+  { ro: "A lucra", ph: "ah loo-KRAH", en: "To work", level: "A1", cat: "Verbs",
+    example: "Lucrez într-o firmă din București.",
+    alt: "A munci = to work (same meaning, more effort implied) | Serviciu = job | Firmă = company" },
+
+  { ro: "A cumpăra", ph: "ah coom-PUH-rah", en: "To buy", level: "A1", cat: "Verbs",
+    example: "Vreau să cumpăr pâine.",
+    alt: "A vinde = to sell | A plăti = to pay | Cât costă? = How much does it cost?" },
+
+  { ro: "A mânca", ph: "ah mun-KAH", en: "To eat", level: "A1", cat: "Verbs",
+    example: "Mâncăm împreună?",
+    alt: "A bea = to drink | A gusta = to taste | Poftă bună! = Enjoy your meal!" },
+
+  // ─── USEFUL PHRASES ──────────────────────────────────────
+  { ro: "Nu știu", ph: "noo SHTEE-oo", en: "I don't know", level: "A1", cat: "Phrases",
+    example: "Nu știu unde este.",
+    alt: "Nu înțeleg = I don't understand | Nu vorbesc bine română = I don't speak Romanian well" },
+
+  { ro: "Puteți vorbi mai rar?", ph: "poo-TETS vor-BEE my RAR", en: "Can you speak more slowly?", level: "A1", cat: "Phrases",
+    example: "Scuzați, puteți vorbi mai rar, te rog?",
+    alt: "Mai tare = louder | Puteți repeta? = Can you repeat? | Cum se spune...? = How do you say...?" },
+
+  { ro: "Cât costă?", ph: "cut COHS-tuh", en: "How much does it cost?", level: "A1", cat: "Phrases",
+    example: "Cât costă chiria?",
+    alt: "Este scump = it's expensive | Este ieftin = it's cheap | Pot plăti cu cardul? = Can I pay by card?" },
+
+  { ro: "Îmi place", ph: "eem PLAH-cheh", en: "I like it", level: "A1", cat: "Phrases",
+    example: "Îmi place România foarte mult.",
+    alt: "Îmi place foarte mult = I like it very much | Nu îmi place = I don't like | Îmi place mâncarea română = I like Romanian food" },
+
+  // ─── DOCUMENTS / EVERYDAY ADMIN ──────────────────────────
+  { ro: "Buletin", ph: "boo-leh-TEEN", en: "ID card (Romanian national ID)", level: "A2", cat: "Documents",
+    example: "Aveți buletinul la dumneavoastră?",
+    alt: "Carte de identitate = formal name for ID | Pașaport = passport | Permis = driving licence" },
+
+  { ro: "Contractul de muncă", ph: "con-TRAC-tool deh MOON-kuh", en: "Work contract / Employment contract", level: "A2", cat: "Documents",
+    example: "Am contract de muncă pe perioadă nedeterminată.",
+    alt: "Nedeterminat = permanent | Determinat = fixed term | Salariu = salary" },
+
+  { ro: "Chitanță", ph: "kee-TAHN-tsuh", en: "Receipt", level: "A2", cat: "Documents",
+    example: "Puteți da o chitanță, te rog?",
+    alt: "Factură = invoice | Bon fiscal = till receipt | Dovadă = proof/evidence" },
+
+  { ro: "Cerere", ph: "CHEH-reh-reh", en: "Application / Request form", level: "A2", cat: "Documents",
+    example: "Trebuie să depun o cerere.",
+    alt: "Formular = form | A completa = to fill in | A depune = to submit/lodge" },
+
+  { ro: "Adeverință", ph: "ah-deh-veh-REEN-tsuh", en: "Certificate / Proof document", level: "A2", cat: "Documents",
+    example: "Am nevoie de o adeverință de la angajator.",
+    alt: "Angajator = employer | Document = document | Apostilă = apostille" },
+
+  // ─── PR EXAM VOCAB ────────────────────────────────────────
+  { ro: "Ședere permanentă", ph: "SHEH-deh-reh per-mah-NEN-tuh", en: "Permanent residency", level: "B1", cat: "PR Exam",
+    example: "Solicit dreptul de ședere permanentă.",
+    alt: "Ședere temporară = temporary residency | Viza = visa | Permis de ședere = residence permit" },
+
+  { ro: "Integrat", ph: "een-teh-GRAHT", en: "Integrated / settled in", level: "B1", cat: "PR Exam",
+    example: "M-am integrat bine în comunitatea românească.",
+    alt: "Adaptat = adapted | Stabilit = settled | Înrădăcinat = rooted (strong)" },
+
+  { ro: "Mijloace de trai", ph: "meej-LWAH-cheh deh TRY", en: "Means of living / Financial means", level: "B1", cat: "PR Exam",
+    example: "Am mijloace de trai suficiente.",
+    alt: "Salariu = salary | Venituri = income | Extras de cont = bank statement" },
+
+  { ro: "Cazier judiciar", ph: "kah-ZYEHR yoo-dee-CHYAR", en: "Criminal record", level: "B1", cat: "PR Exam",
+    example: "Nu am cazier judiciar.",
+    alt: "Curat = clean (colloquial) | Fără antecedente = no prior offences" },
+
+  { ro: "Contribuție", ph: "con-tree-BOO-tsyeh", en: "Contribution", level: "B1", cat: "PR Exam",
+    example: "Plătesc contribuțiile sociale lunar.",
+    alt: "Impozit = tax | CAS = pension contribution | CASS = health contribution" },
+
 ];
 // ===== COMPREHENSIVE LESSONS =====
 const LESSONS = [
@@ -2055,7 +2236,7 @@ function speak(text) {
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'ro-RO'; u.rate = 0.85; u.pitch = 1;
+  u.lang = 'ro-RO'; u.rate = 0.65; u.pitch = 0.95;
   const voices = window.speechSynthesis.getVoices();
   const ro = voices.find(v => v.lang === 'ro-RO' || v.lang.startsWith('ro'));
   if (ro) u.voice = ro;
@@ -2080,14 +2261,20 @@ function renderPRPhrases(containerId) {
   const c = document.getElementById(containerId);
   if (!c) return;
   c.innerHTML = PR_PHRASES.map((p, i) => `
-    <div class="phrase-card" onclick="speak(PR_PHRASES[${i}].ro)" style="display:flex;align-items:flex-start;gap:12px;background:var(--navy2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;">
-      <div style="background:var(--gold);color:var(--navy);font-weight:700;font-size:13px;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${i+1}</div>
-      <div style="flex:1;">
-        <div style="font-family:'Source Serif 4',serif;color:var(--gold);font-size:15px;margin-bottom:4px;">${p.ro}</div>
-        <div style="color:var(--text-dim);font-size:13px;">${p.en}</div>
-        ${p.note ? `<div style="color:var(--text-dim);font-size:12px;margin-top:4px;font-style:italic;">💡 ${p.note}</div>` : ''}
+    <div style="background:var(--navy2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;">
+        <div style="background:var(--gold);color:var(--navy);font-weight:700;font-size:13px;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${i+1}</div>
+        <div style="flex:1;">
+          <div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;">📌 ${p.note || ''}</div>
+          <div onclick="speak(PR_PHRASES[${i}].ro)" style="font-family:'Source Serif 4',serif;color:var(--gold);font-size:15px;margin-bottom:4px;cursor:pointer;">🔊 ${p.ro}</div>
+          <div style="color:var(--text-dim);font-size:13px;">${p.en}</div>
+        </div>
       </div>
-      <div style="color:var(--text-dim);font-size:18px;">🔊</div>
+      ${p.alt && p.alt.length ? `
+        <div style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-dim);margin-bottom:6px;">💬 OTHER WAYS TO SAY IT:</div>
+          ${p.alt.map((a,j) => `<div onclick="speak(PR_PHRASES[${i}].alt[${j}].split('(')[0].trim())" style="font-size:13px;color:var(--text);margin-bottom:4px;cursor:pointer;padding:6px;background:var(--navy3);border-radius:6px;">🔊 ${a}</div>`).join('')}
+        </div>` : ''}
     </div>
   `).join('');
 }
@@ -2174,9 +2361,10 @@ function renderVocabList(words) {
         </div>
         <div style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;background:var(--gold);color:var(--navy);">${w.level || w.cat || ''}</div>
       </div>
-      <div style="color:var(--text-dim);font-size:14px;">${w.en}</div>
-      ${w.example ? `<div style="font-size:13px;color:var(--gold);font-style:italic;margin-top:6px;">"${w.example}"</div>` : ''}
-      ${w.grammar ? `<div style="font-size:12px;color:var(--text-dim);margin-top:4px;">📌 ${w.grammar}</div>` : ''}
+      <div style="color:var(--text-dim);font-size:14px;margin-bottom:6px;">${w.en}</div>
+      ${w.example ? `<div style="font-size:13px;color:var(--gold);font-style:italic;margin-bottom:6px;">"${w.example}"</div>` : ''}
+      ${w.grammar ? `<div style="font-size:12px;color:var(--text-dim);margin-bottom:6px;">📌 ${w.grammar}</div>` : ''}
+      ${w.alt ? `<div style="font-size:12px;background:var(--navy3);border-radius:6px;padding:8px;color:var(--text-dim);">💬 ${w.alt}</div>` : ''}
       <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">🔊 Tap to hear</div>
     </div>
   `).join('');
