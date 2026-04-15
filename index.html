@@ -749,6 +749,8 @@ let vocabFilter = "All";
 let speechSupported = true;
 let recognition = null;
 let qaRecognition = null;
+let practiceRecording = false;
+let qaRecording = false;
 
 // ══════════════════════════════════════════════
 //  SPEECH (Google Translate TTS — natural voice)
@@ -846,23 +848,158 @@ function initSpeech() {
     document.getElementById("speechWarning").classList.remove("hidden");
     return;
   }
+
+  // ── Practice recognition ──
   recognition = new SR();
   recognition.lang = "ro-RO";
-  recognition.interimResults = false;
+  recognition.interimResults = true;
   recognition.continuous = false;
-  recognition.onresult = function(e) { handlePracticeResult(e.results[0][0].transcript); };
-  recognition.onend = function() { renderPractice(); };
-  recognition.onerror = function() { renderPractice(); };
+  recognition.maxAlternatives = 3;
 
+  recognition.onstart = function() {
+    practiceRecording = true;
+    updatePracticeMicUI();
+  };
+
+  recognition.onresult = function(e) {
+    var transcript = "";
+    for (var i = 0; i < e.results.length; i++) {
+      transcript += e.results[i][0].transcript;
+    }
+    // Show interim results live
+    lastPracticeTranscript = transcript;
+    updatePracticeTranscriptUI(transcript, !e.results[e.results.length - 1].isFinal);
+
+    if (e.results[e.results.length - 1].isFinal) {
+      practiceRecording = false;
+      updatePracticeMicUI();
+      handlePracticeResult(transcript);
+    }
+  };
+
+  recognition.onend = function() {
+    practiceRecording = false;
+    updatePracticeMicUI();
+  };
+
+  recognition.onerror = function(e) {
+    practiceRecording = false;
+    updatePracticeMicUI();
+    if (e.error === "no-speech") {
+      showMicError("practMicError", "No speech detected. Tap the mic and speak clearly.");
+    } else if (e.error === "not-allowed") {
+      showMicError("practMicError", "Microphone access denied. Please allow microphone in your browser settings.");
+    } else if (e.error !== "aborted") {
+      showMicError("practMicError", "Could not hear you. Please try again.");
+    }
+  };
+
+  // ── Q&A recognition ──
   qaRecognition = new SR();
   qaRecognition.lang = "ro-RO";
-  qaRecognition.interimResults = false;
+  qaRecognition.interimResults = true;
   qaRecognition.continuous = false;
-  qaRecognition.onresult = function(e) { handleQAResult(e.results[0][0].transcript); };
-  qaRecognition.onend = function() { renderQA(); };
-  qaRecognition.onerror = function() { renderQA(); };
+  qaRecognition.maxAlternatives = 3;
+
+  qaRecognition.onstart = function() {
+    qaRecording = true;
+    updateQAMicUI();
+  };
+
+  qaRecognition.onresult = function(e) {
+    var transcript = "";
+    for (var i = 0; i < e.results.length; i++) {
+      transcript += e.results[i][0].transcript;
+    }
+    lastQATranscript = transcript;
+    updateQATranscriptUI(transcript, !e.results[e.results.length - 1].isFinal);
+
+    if (e.results[e.results.length - 1].isFinal) {
+      qaRecording = false;
+      updateQAMicUI();
+      handleQAResult(transcript);
+    }
+  };
+
+  qaRecognition.onend = function() {
+    qaRecording = false;
+    updateQAMicUI();
+  };
+
+  qaRecognition.onerror = function(e) {
+    qaRecording = false;
+    updateQAMicUI();
+    if (e.error === "no-speech") {
+      showMicError("qaMicError", "No speech detected. Tap the mic and speak clearly.");
+    } else if (e.error === "not-allowed") {
+      showMicError("qaMicError", "Microphone access denied. Please allow microphone in your browser settings.");
+    } else if (e.error !== "aborted") {
+      showMicError("qaMicError", "Could not hear you. Please try again.");
+    }
+  };
 
   window.speechSynthesis.getVoices();
+}
+
+// ── Mic UI helpers (update WITHOUT re-rendering entire page) ──
+function updatePracticeMicUI() {
+  var btn = document.getElementById("practMic");
+  if (!btn) return;
+  if (practiceRecording) {
+    btn.classList.add("recording");
+    btn.innerHTML = "⏹";
+  } else {
+    btn.classList.remove("recording");
+    btn.innerHTML = "🎤";
+  }
+  var label = document.getElementById("practMicLabel");
+  if (label) {
+    label.innerHTML = practiceRecording 
+      ? '<span style="color:var(--error);font-weight:600;animation:pulse 1.5s infinite">🔴 Listening... speak now in Romanian</span>' 
+      : '';
+  }
+}
+
+function updateQAMicUI() {
+  var btn = document.getElementById("qaMic");
+  if (!btn) return;
+  if (qaRecording) {
+    btn.classList.add("recording");
+    btn.innerHTML = "⏹";
+  } else {
+    btn.classList.remove("recording");
+    btn.innerHTML = "🎤";
+  }
+  var label = document.getElementById("qaMicLabel");
+  if (label) {
+    label.innerHTML = qaRecording 
+      ? '<span style="color:var(--error);font-weight:600;animation:pulse 1.5s infinite">🔴 Listening... answer now</span>' 
+      : '';
+  }
+}
+
+function updatePracticeTranscriptUI(text, isInterim) {
+  var el = document.getElementById("practTranscript");
+  if (!el) return;
+  el.innerHTML = '<div class="transcript-box"><p style="font-size:12px;color:var(--textMuted);margin:0 0 4px;font-weight:600">You said:</p>'
+    + '<p style="font-size:16px;margin:0;font-weight:500;'+(isInterim?'color:var(--textMuted);font-style:italic':'')+'">"' + text + '"'
+    + (isInterim ? ' <span style="font-size:11px">...</span>' : '') + '</p></div>';
+}
+
+function updateQATranscriptUI(text, isInterim) {
+  var el = document.getElementById("qaTranscript");
+  if (!el) return;
+  el.innerHTML = '<div class="transcript-box"><p style="font-size:12px;color:var(--textMuted);margin:0 0 4px;font-weight:600">Your answer:</p>'
+    + '<p style="font-size:16px;margin:0;font-weight:500;'+(isInterim?'color:var(--textMuted);font-style:italic':'')+'">"' + text + '"'
+    + (isInterim ? ' <span style="font-size:11px">...</span>' : '') + '</p></div>';
+}
+
+function showMicError(elId, msg) {
+  var el = document.getElementById(elId);
+  if (!el) return;
+  el.innerHTML = '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:10px;margin-top:10px;animation:fadeIn 0.3s">'
+    + '<p style="color:#dc2626;font-size:13px;margin:0">⚠️ ' + msg + '</p></div>';
+  setTimeout(function() { if (el) el.innerHTML = ''; }, 5000);
 }
 
 // ══════════════════════════════════════════════
@@ -888,7 +1025,19 @@ function handlePracticeResult(spoken) {
   lastPracticeFeedback = { grade:grade, msg:msg, color:color, score:best };
   lastPracticeTranscript = spoken;
   practiceHistory.push({ question:q.questionRo, spoken:spoken, score:best, grade:grade });
-  renderPractice();
+
+  // Update feedback area directly (no full re-render)
+  var el = document.getElementById("practFeedback");
+  if (el) {
+    var h = '<div class="feedback-box" style="background:'+color+'12;border:1.5px solid '+color+'30">';
+    h += '<p style="font-size:20px;font-weight:800;margin:0 0 4px;color:'+color+'">'+grade+'</p>';
+    h += '<p style="font-size:14px;margin:0">'+msg+'</p>';
+    h += '<div style="margin-top:10px;height:6px;border-radius:3px;background:var(--surface3);overflow:hidden">';
+    h += '<div style="height:100%;border-radius:3px;background:'+color+';width:'+Math.round(best*100)+'%;transition:width 0.5s"></div></div>';
+    h += '<p style="font-size:11px;color:var(--textMuted);margin:6px 0 0;text-align:right">'+Math.round(best*100)+'% match</p>';
+    h += '</div>';
+    el.innerHTML = h;
+  }
 }
 
 function handleQAResult(spoken) {
@@ -901,7 +1050,22 @@ function handleQAResult(spoken) {
   else { grade="Mai încearcă"; msg='Try: "'+q.answers[0].ro+'"'; color="#ef4444"; }
   lastQAFeedback = { grade:grade, msg:msg, color:color, score:best };
   lastQATranscript = spoken;
-  renderQA();
+
+  // Update feedback area directly
+  var el = document.getElementById("qaFeedback");
+  if (el) {
+    var h = '<div class="feedback-box" style="background:'+color+'12;border:1.5px solid '+color+'30">';
+    h += '<p style="font-size:20px;font-weight:800;margin:0 0 4px;color:'+color+'">'+grade+'</p>';
+    h += '<p style="font-size:14px;margin:0 0 12px">'+msg+'</p>';
+    h += '<p style="font-size:12px;color:var(--textMuted);font-weight:600;margin:0 0 6px">Good answers include:</p>';
+    q.answers.slice(0,2).forEach(function(a) {
+      h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+      h += speakBtnHTML(a.ro, true);
+      h += '<span style="font-size:13px">'+a.ro+'</span></div>';
+    });
+    h += '</div>';
+    el.innerHTML = h;
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -931,6 +1095,11 @@ function resetFeedback() {
   lastPracticeFeedback=null; lastPracticeTranscript="";
   lastQAFeedback=null; lastQATranscript="";
   showAnswers=false; showAlts=false; qaMode="listen";
+  // Stop any active recording
+  if (practiceRecording && recognition) { try { recognition.stop(); } catch(e){} }
+  if (qaRecording && qaRecognition) { try { qaRecognition.stop(); } catch(e){} }
+  practiceRecording = false;
+  qaRecording = false;
 }
 
 function navHTML() {
@@ -995,13 +1164,18 @@ function renderPractice() {
   // Mic area
   h += '<div class="card" style="text-align:center">';
   h += '<p style="font-size:13px;color:var(--textMuted);margin:0 0 16px;font-weight:500">🎤 Repeat the question or say an answer in Romanian</p>';
-  h += '<div style="display:flex;justify-content:center;margin-bottom:16px">';
-  h += '<button class="mic-btn" id="practMic" onclick="startPracticeRec()">🎤</button></div>';
+  h += '<div style="display:flex;justify-content:center;margin-bottom:12px">';
+  h += '<button class="mic-btn'+(practiceRecording?' recording':'')+'" id="practMic" onclick="togglePracticeRec()">'+(practiceRecording?'⏹':'🎤')+'</button></div>';
+  h += '<div id="practMicLabel"></div>';
+  h += '<div id="practMicError"></div>';
+  h += '<div id="practTranscript">';
 
   if (lastPracticeTranscript) {
     h += '<div class="transcript-box"><p style="font-size:12px;color:var(--textMuted);margin:0 0 4px;font-weight:600">You said:</p>';
     h += '<p style="font-size:16px;margin:0;font-weight:500">"'+lastPracticeTranscript+'"</p></div>';
   }
+  h += '</div>';
+  h += '<div id="practFeedback">';
   if (lastPracticeFeedback) {
     var f = lastPracticeFeedback;
     h += '<div class="feedback-box" style="background:'+f.color+'12;border:1.5px solid '+f.color+'30">';
@@ -1012,6 +1186,7 @@ function renderPractice() {
     h += '<p style="font-size:11px;color:var(--textMuted);margin:6px 0 0;text-align:right">'+Math.round(f.score*100)+'% match</p>';
     h += '</div>';
   }
+  h += '</div>';
   h += '</div>';
 
   // Sample answers
@@ -1035,12 +1210,36 @@ function renderPractice() {
   document.getElementById("tab-practice").innerHTML = h;
 }
 
-function startPracticeRec() {
-  if (!speechSupported || !recognition) return;
-  lastPracticeFeedback = null; lastPracticeTranscript = "";
-  recognition.start();
-  var btn = document.getElementById("practMic");
-  if (btn) { btn.classList.add("recording"); btn.innerHTML = "⏹"; }
+function togglePracticeRec() {
+  if (!speechSupported || !recognition) {
+    showMicError("practMicError", "Speech recognition not supported. Use Chrome or Safari.");
+    return;
+  }
+  if (practiceRecording) {
+    // Stop recording
+    recognition.stop();
+    practiceRecording = false;
+    updatePracticeMicUI();
+  } else {
+    // Start recording — clear previous feedback
+    lastPracticeFeedback = null;
+    lastPracticeTranscript = "";
+    var transcriptEl = document.getElementById("practTranscript");
+    if (transcriptEl) transcriptEl.innerHTML = "";
+    var feedbackEl = document.getElementById("practFeedback");
+    if (feedbackEl) feedbackEl.innerHTML = "";
+    var errorEl = document.getElementById("practMicError");
+    if (errorEl) errorEl.innerHTML = "";
+    try {
+      recognition.start();
+    } catch(e) {
+      // Already started — stop and restart
+      recognition.stop();
+      setTimeout(function() {
+        try { recognition.start(); } catch(e2) {}
+      }, 200);
+    }
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -1070,13 +1269,18 @@ function renderQA() {
     h += '<div style="text-align:center;padding:10px 0">';
     h += '<p style="font-size:14px;font-weight:600;color:var(--accent);margin-bottom:4px">"'+q.questionRo+'"</p>';
     h += '<p style="font-size:12px;color:var(--textMuted);margin-bottom:16px">Answer this question in Romanian</p>';
-    h += '<div style="display:flex;justify-content:center;margin-bottom:16px">';
-    h += '<button class="mic-btn" id="qaMic" onclick="startQARec()">🎤</button></div>';
+    h += '<div style="display:flex;justify-content:center;margin-bottom:12px">';
+    h += '<button class="mic-btn'+(qaRecording?' recording':'')+'" id="qaMic" onclick="toggleQARec()">'+(qaRecording?'⏹':'🎤')+'</button></div>';
+    h += '<div id="qaMicLabel"></div>';
+    h += '<div id="qaMicError"></div>';
+    h += '<div id="qaTranscript">';
 
     if (lastQATranscript) {
       h += '<div class="transcript-box"><p style="font-size:12px;color:var(--textMuted);margin:0 0 4px;font-weight:600">Your answer:</p>';
       h += '<p style="font-size:16px;margin:0;font-weight:500">"'+lastQATranscript+'"</p></div>';
     }
+    h += '</div>';
+    h += '<div id="qaFeedback">';
     if (lastQAFeedback) {
       var f = lastQAFeedback;
       h += '<div class="feedback-box" style="background:'+f.color+'12;border:1.5px solid '+f.color+'30">';
@@ -1091,6 +1295,7 @@ function renderQA() {
       h += '</div>';
     }
     h += '</div>';
+    h += '</div>';
   }
   h += '</div>';
   h += navHTML();
@@ -1098,12 +1303,33 @@ function renderQA() {
   document.getElementById("tab-qa").innerHTML = h;
 }
 
-function startQARec() {
-  if (!speechSupported || !qaRecognition) return;
-  lastQAFeedback = null; lastQATranscript = "";
-  qaRecognition.start();
-  var btn = document.getElementById("qaMic");
-  if (btn) { btn.classList.add("recording"); btn.innerHTML = "⏹"; }
+function toggleQARec() {
+  if (!speechSupported || !qaRecognition) {
+    showMicError("qaMicError", "Speech recognition not supported. Use Chrome or Safari.");
+    return;
+  }
+  if (qaRecording) {
+    qaRecognition.stop();
+    qaRecording = false;
+    updateQAMicUI();
+  } else {
+    lastQAFeedback = null;
+    lastQATranscript = "";
+    var transcriptEl = document.getElementById("qaTranscript");
+    if (transcriptEl) transcriptEl.innerHTML = "";
+    var feedbackEl = document.getElementById("qaFeedback");
+    if (feedbackEl) feedbackEl.innerHTML = "";
+    var errorEl = document.getElementById("qaMicError");
+    if (errorEl) errorEl.innerHTML = "";
+    try {
+      qaRecognition.start();
+    } catch(e) {
+      qaRecognition.stop();
+      setTimeout(function() {
+        try { qaRecognition.start(); } catch(e2) {}
+      }, 200);
+    }
+  }
 }
 
 // ══════════════════════════════════════════════
